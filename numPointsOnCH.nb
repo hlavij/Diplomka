@@ -1,0 +1,468 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     19789,        459]
+NotebookOptionsPosition[     19345,        440]
+NotebookOutlinePosition[     19683,        455]
+CellTagsIndexPosition[     19640,        452]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", 
+   RowBox[{"Global", " ", "Variables"}], "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"numOfPoints", " ", "=", " ", "250"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"numOfTests", " ", "=", " ", "10000"}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"convexHullNum", " ", "=", " ", "0.0"}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{
+    "Distributin", " ", "function", " ", "for", " ", "generating", " ", 
+     "point", " ", "on", " ", "given", " ", "region"}], "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"RegionDistribution", "/:", "\[IndentingNewLine]", 
+    RowBox[{"Random`DistributionVector", "[", 
+     RowBox[{
+      RowBox[{"RegionDistribution", "[", "reg_MeshRegion", "]"}], ",", 
+      "n_Integer", ",", 
+      RowBox[{"prec_", "?", "Positive"}]}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"d", "=", 
+         RowBox[{"RegionDimension", "@", "reg"}]}], ",", "cells", ",", 
+        "measures", ",", "s", ",", "m"}], "}"}], ",", 
+      RowBox[{
+       RowBox[{"cells", "=", 
+        RowBox[{"Developer`ToPackedArray", "@", 
+         RowBox[{
+          RowBox[{"MeshPrimitives", "[", 
+           RowBox[{"reg", ",", "d"}], "]"}], "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", "1"}], "]"}], "]"}]}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"s", "=", 
+        RowBox[{"RandomVariate", "[", 
+         RowBox[{
+          RowBox[{"DirichletDistribution", "@", 
+           RowBox[{"ConstantArray", "[", 
+            RowBox[{"1", ",", 
+             RowBox[{"d", "+", "1"}]}], "]"}]}], ",", "n"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"measures", "=", 
+        RowBox[{"PropertyValue", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"reg", ",", "d"}], "}"}], ",", "MeshCellMeasure"}], 
+         "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"m", "=", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"RandomVariate", "[", 
+           RowBox[{"#", ",", "n"}], "]"}], "&"}], "@", 
+         RowBox[{"EmpiricalDistribution", "[", 
+          RowBox[{"measures", "\[Rule]", 
+           RowBox[{"Range", "@", 
+            RowBox[{"Length", "@", "cells"}]}]}], "]"}]}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{"#", "[", 
+            RowBox[{"[", 
+             RowBox[{"All", ",", "1"}], "]"}], "]"}], " ", 
+           RowBox[{"(", 
+            RowBox[{"1", "-", 
+             RowBox[{"Total", "[", 
+              RowBox[{"s", ",", 
+               RowBox[{"{", "2", "}"}]}], "]"}]}], ")"}]}], "+", 
+          RowBox[{"Total", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"#", "[", 
+              RowBox[{"[", 
+               RowBox[{"All", ",", 
+                RowBox[{"2", ";;"}]}], "]"}], "]"}], " ", "s"}], ",", 
+            RowBox[{"{", "2", "}"}]}], "]"}]}], "&"}], "@", 
+        RowBox[{"cells", "[", 
+         RowBox[{"[", "m", "]"}], "]"}]}]}]}], "]"}]}], "\[IndentingNewLine]",
+    "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"(*", 
+     RowBox[{
+     "Initialize", " ", "of", " ", "two", " ", "CIRCLE", " ", "regions"}], 
+     "*)"}], "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"region1", " ", "=", " ", 
+      RowBox[{"DiscretizeRegion", "@", 
+       RowBox[{"Disk", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"10", ",", "10"}], "}"}], ",", " ", "10"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"region2", " ", "=", " ", 
+      RowBox[{"DiscretizeRegion", "@", 
+       RowBox[{"Disk", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"30", ",", "30"}], "}"}], ",", " ", "10"}], "]"}]}]}], 
+     ";"}], "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"(*", 
+     RowBox[{
+     "Initialize", " ", "of", " ", "two", " ", "POLYGON", " ", "regions"}], 
+     "*)"}], "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"region1", " ", "=", " ", 
+      RowBox[{"DiscretizeRegion", "@", 
+       RowBox[{"Polygon", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"12", ",", "2"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"11", ",", "2"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"10.5", ",", "4"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"7.5", ",", "9.5"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"9.5", ",", "7.5"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"4", ",", "10.5"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "11"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "12"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"7", ",", "13"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"12", ",", " ", "12"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{"13", ",", "7"}], "}"}]}], "}"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"region2", " ", "=", " ", 
+      RowBox[{"DiscretizeRegion", "@", 
+       RowBox[{"Polygon", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"5", ",", "2"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"7", ",", "2"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"7", ",", "7"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", "7"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"2", ",", " ", "5"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"4", ",", " ", "5"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"5", ",", " ", "4"}], "}"}]}], "}"}], "]"}]}]}], ";"}], 
+    "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", 
+    RowBox[{"(*", 
+     RowBox[{
+     "Initialize", " ", "of", " ", "two", " ", "RECTANGLE", " ", "regions"}], 
+     "*)"}], "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"region1", " ", "=", " ", 
+      RowBox[{"DiscretizeRegion", "@", 
+       RowBox[{"Rectangle", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"0", ",", "1"}], "}"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"10", ",", "5"}], "}"}]}], "]"}]}]}], ";"}], "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Do", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"Module", "[", 
+      RowBox[{
+       RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       
+       RowBox[{
+        RowBox[{"region1", " ", "=", " ", 
+         RowBox[{"DiscretizeRegion", "@", 
+          RowBox[{"Polygon", "[", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"{", 
+              RowBox[{"12", ",", "2"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"11", ",", "2"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"10.5", ",", "4"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"7.5", ",", "9.5"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"9.5", ",", "7.5"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"4", ",", "10.5"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"2", ",", "11"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"2", ",", "12"}], "}"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{"7", ",", "13"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"12", ",", " ", "12"}], "}"}], ",", 
+             RowBox[{"{", 
+              RowBox[{"13", ",", "7"}], "}"}]}], "}"}], "]"}]}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"region1Centr", " ", "=", " ", 
+         RowBox[{"RegionCentroid", "[", "region1", "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"pts1", "=", " ", 
+         RowBox[{"RandomVariate", "[", 
+          RowBox[{
+           RowBox[{"RegionDistribution", "[", "region1", "]"}], ",", 
+           "numOfPoints"}], "]"}]}], ";", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"(*", 
+         RowBox[{
+          RowBox[{
+          "Exctract", " ", "points", " ", "on", " ", "convex", " ", "hull"}], 
+          " ", "-", " ", 
+          RowBox[{"both", " ", "regions"}]}], "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"convexHullpts1", " ", "=", " ", 
+         RowBox[{"RegionBoundary", "[", 
+          RowBox[{"ConvexHullMesh", "[", "pts1", "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"arrayOneConvexHull", " ", "=", " ", "pts1"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"cutConvexHull1", "[", "x_", "]"}], "=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{"RegionMember", "[", 
+            RowBox[{"convexHullpts1", ",", 
+             RowBox[{"arrayOneConvexHull", "[", 
+              RowBox[{"[", "x", "]"}], "]"}]}], "]"}], ",", 
+           RowBox[{"(*", 
+            RowBox[{"Print", "[", 
+             RowBox[{"arrayOneConvexHull", "[", 
+              RowBox[{"[", "x", "]"}], "]"}], "]"}], "*)"}], ",", " ", 
+           RowBox[{"arrayOneConvexHull", " ", "=", " ", 
+            RowBox[{"Delete", "[", 
+             RowBox[{"arrayOneConvexHull", ",", " ", "x"}], "]"}]}]}], 
+          "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"i", "=", "numOfPoints"}], ",", " ", 
+          RowBox[{"i", ">", "0"}], ",", " ", 
+          RowBox[{"i", "--"}], ",", " ", 
+          RowBox[{"cutConvexHull1", "[", "i", "]"}]}], "]"}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"convexHullNum", " ", "+=", " ", 
+         RowBox[{"Length", "[", "arrayOneConvexHull", "]"}]}], ";"}]}], 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ",", 
+     RowBox[{"{", "numOfTests", "}"}]}], "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"ListPlot", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"pts1", ",", " ", "arrayOneConvexHull"}], "}"}], ",", " ", 
+     RowBox[{"AspectRatio", "\[Rule]", "Automatic"}]}], "]"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", 
+    RowBox[{"\"\<Number of tests: \>\"", ",", " ", "numOfTests"}], "]"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", 
+    RowBox[{"\"\<Number of points: \>\"", ",", " ", "numOfPoints"}], "]"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", 
+    RowBox[{"\"\<Avarage num of points on CH: \>\"", ",", " ", 
+     RowBox[{"convexHullNum", "/", "numOfTests"}]}], "]"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", 
+    RowBox[{"\"\<In percent: \>\"", ",", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"convexHullNum", "/", "numOfTests"}], ")"}], "/", 
+        "numOfPoints"}], ")"}], "*", "100"}]}], "]"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->{{3.67074801309262*^9, 3.670748084562337*^9}, {
+   3.6707481454951487`*^9, 3.670748254506894*^9}, {3.6707483074412727`*^9, 
+   3.6707484412566547`*^9}, {3.670748690035192*^9, 3.6707487630737133`*^9}, {
+   3.6707488058692493`*^9, 3.6707488095460377`*^9}, 3.670749225163919*^9, 
+   3.670749452401731*^9, {3.6707495092564383`*^9, 3.670749519646204*^9}, {
+   3.670749614896027*^9, 3.670749615434051*^9}, {3.670749714887793*^9, 
+   3.67074971621423*^9}, {3.670749778036294*^9, 3.6707497791225653`*^9}, {
+   3.67074983567144*^9, 3.670749836229851*^9}, {3.670749919925818*^9, 
+   3.670749920867405*^9}, {3.670749994563002*^9, 3.670750050042835*^9}, {
+   3.670750091452456*^9, 3.6707501414742393`*^9}, {3.670750181059741*^9, 
+   3.670750212256796*^9}, {3.670750266623948*^9, 3.670750268174355*^9}, {
+   3.6707503205390787`*^9, 3.67075032100107*^9}, {3.6707504543172626`*^9, 
+   3.6707504952612143`*^9}, {3.670750541520462*^9, 3.670750548018566*^9}, {
+   3.670750655204117*^9, 3.670750693992934*^9}, {3.67075073432777*^9, 
+   3.670750734740118*^9}, {3.670750819056666*^9, 3.6707508197721033`*^9}, {
+   3.6707508688349657`*^9, 3.670750869272996*^9}, {3.670750922787158*^9, 
+   3.670750924074705*^9}, {3.6707509833739758`*^9, 3.670750983839656*^9}, {
+   3.670751052622629*^9, 3.6707510536562147`*^9}, {3.670751107129603*^9, 
+   3.6707511077299557`*^9}, {3.670751167621284*^9, 3.670751168192771*^9}, {
+   3.6707513529501677`*^9, 3.6707513560805798`*^9}, {3.670918279051819*^9, 
+   3.670918280841024*^9}, {3.671380827327113*^9, 3.67138084963962*^9}, 
+   3.671380947084939*^9, {3.671381346072514*^9, 3.6713813467827177`*^9}, {
+   3.6713817876465797`*^9, 3.671381789124587*^9}, {3.671382185472698*^9, 
+   3.6713821867135477`*^9}, {3.671382585847144*^9, 3.671382588020164*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"Part", "::", "pkspec1"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The expression \[NoBreak]\\!\\(\\*RowBox[{\\\"x\\\"}]\\)\
+\[NoBreak] cannot be used as a part specification. \\!\\(\\*ButtonBox[\\\"\
+\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/Part\\\", ButtonNote -> \
+\\\"Part::pkspec1\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{
+  3.670748260041986*^9, 3.670748315228444*^9, 3.670748385367426*^9, 
+   3.670748443854484*^9, {3.670748755771047*^9, 3.670748765372113*^9}, 
+   3.670748811894006*^9, 3.670749231084013*^9, 3.670749521692153*^9, 
+   3.670749618183221*^9, 3.670749719776002*^9, 3.6707497819159*^9, 
+   3.670749844165792*^9, 3.670749924717424*^9, 3.670750052349365*^9, {
+   3.670750098356208*^9, 3.670750145379586*^9}, {3.670750189926792*^9, 
+   3.67075021565198*^9}, 3.670750270446138*^9, 3.6707503231093683`*^9, 
+   3.670750498970636*^9, 3.670750551418022*^9, 3.670750666359733*^9, 
+   3.670750697456266*^9, 3.67075073676859*^9, 3.6707508224841146`*^9, 
+   3.670750871170249*^9, 3.670750926174622*^9, 3.67075098664907*^9, 
+   3.670751055706616*^9, 3.6707511098376703`*^9, 3.670751170601097*^9, 
+   3.670751359067099*^9, 3.670918283373528*^9, 3.6713808525410757`*^9, 
+   3.67138099531689*^9, 3.671381360938993*^9, 3.671381791882247*^9, 
+   3.6713821894866257`*^9, 3.6713825913055553`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"Part", "::", "pkspec1"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The expression \[NoBreak]\\!\\(\\*RowBox[{\\\"x\\\"}]\\)\
+\[NoBreak] cannot be used as a part specification. \\!\\(\\*ButtonBox[\\\"\
+\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/Part\\\", ButtonNote -> \
+\\\"Part::pkspec1\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{
+  3.670748260041986*^9, 3.670748315228444*^9, 3.670748385367426*^9, 
+   3.670748443854484*^9, {3.670748755771047*^9, 3.670748765372113*^9}, 
+   3.670748811894006*^9, 3.670749231084013*^9, 3.670749521692153*^9, 
+   3.670749618183221*^9, 3.670749719776002*^9, 3.6707497819159*^9, 
+   3.670749844165792*^9, 3.670749924717424*^9, 3.670750052349365*^9, {
+   3.670750098356208*^9, 3.670750145379586*^9}, {3.670750189926792*^9, 
+   3.67075021565198*^9}, 3.670750270446138*^9, 3.6707503231093683`*^9, 
+   3.670750498970636*^9, 3.670750551418022*^9, 3.670750666359733*^9, 
+   3.670750697456266*^9, 3.67075073676859*^9, 3.6707508224841146`*^9, 
+   3.670750871170249*^9, 3.670750926174622*^9, 3.67075098664907*^9, 
+   3.670751055706616*^9, 3.6707511098376703`*^9, 3.670751170601097*^9, 
+   3.670751359067099*^9, 3.670918283373528*^9, 3.6713808525410757`*^9, 
+   3.67138099531689*^9, 3.671381360938993*^9, 3.671381791882247*^9, 
+   3.6713821894866257`*^9, 3.6713825914084377`*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"Part", "::", "pkspec1"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"The expression \[NoBreak]\\!\\(\\*RowBox[{\\\"x\\\"}]\\)\
+\[NoBreak] cannot be used as a part specification. \\!\\(\\*ButtonBox[\\\"\
+\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/Part\\\", ButtonNote -> \
+\\\"Part::pkspec1\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{
+  3.670748260041986*^9, 3.670748315228444*^9, 3.670748385367426*^9, 
+   3.670748443854484*^9, {3.670748755771047*^9, 3.670748765372113*^9}, 
+   3.670748811894006*^9, 3.670749231084013*^9, 3.670749521692153*^9, 
+   3.670749618183221*^9, 3.670749719776002*^9, 3.6707497819159*^9, 
+   3.670749844165792*^9, 3.670749924717424*^9, 3.670750052349365*^9, {
+   3.670750098356208*^9, 3.670750145379586*^9}, {3.670750189926792*^9, 
+   3.67075021565198*^9}, 3.670750270446138*^9, 3.6707503231093683`*^9, 
+   3.670750498970636*^9, 3.670750551418022*^9, 3.670750666359733*^9, 
+   3.670750697456266*^9, 3.67075073676859*^9, 3.6707508224841146`*^9, 
+   3.670750871170249*^9, 3.670750926174622*^9, 3.67075098664907*^9, 
+   3.670751055706616*^9, 3.6707511098376703`*^9, 3.670751170601097*^9, 
+   3.670751359067099*^9, 3.670918283373528*^9, 3.6713808525410757`*^9, 
+   3.67138099531689*^9, 3.671381360938993*^9, 3.671381791882247*^9, 
+   3.6713821894866257`*^9, 3.671382591494993*^9}],
+
+Cell[BoxData[
+ RowBox[{
+  StyleBox[
+   RowBox[{"General", "::", "stop"}], "MessageName"], 
+  RowBox[{
+  ":", " "}], "\<\"Further output of \
+\[NoBreak]\\!\\(\\*StyleBox[RowBox[{\\\"Part\\\", \\\"::\\\", \
+\\\"pkspec1\\\"}], \\\"MessageName\\\"]\\)\[NoBreak] will be suppressed \
+during this calculation. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
+ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
+ButtonData:>\\\"paclet:ref/message/General/stop\\\", ButtonNote -> \
+\\\"General::stop\\\"]\\)\"\>"}]], "Message", "MSG",
+ CellChangeTimes->{
+  3.670748260041986*^9, 3.670748315228444*^9, 3.670748385367426*^9, 
+   3.670748443854484*^9, {3.670748755771047*^9, 3.670748765372113*^9}, 
+   3.670748811894006*^9, 3.670749231084013*^9, 3.670749521692153*^9, 
+   3.670749618183221*^9, 3.670749719776002*^9, 3.6707497819159*^9, 
+   3.670749844165792*^9, 3.670749924717424*^9, 3.670750052349365*^9, {
+   3.670750098356208*^9, 3.670750145379586*^9}, {3.670750189926792*^9, 
+   3.67075021565198*^9}, 3.670750270446138*^9, 3.6707503231093683`*^9, 
+   3.670750498970636*^9, 3.670750551418022*^9, 3.670750666359733*^9, 
+   3.670750697456266*^9, 3.67075073676859*^9, 3.6707508224841146`*^9, 
+   3.670750871170249*^9, 3.670750926174622*^9, 3.67075098664907*^9, 
+   3.670751055706616*^9, 3.6707511098376703`*^9, 3.670751170601097*^9, 
+   3.670751359067099*^9, 3.670918283373528*^9, 3.6713808525410757`*^9, 
+   3.67138099531689*^9, 3.671381360938993*^9, 3.671381791882247*^9, 
+   3.6713821894866257`*^9, 3.671382591526031*^9}]
+}, Open  ]]
+},
+WindowSize->{1366, 706},
+WindowMargins->{{-10, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.3 for Linux x86 (64-bit) (October 9, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 12975, 309, 1243, "Input"],
+Cell[13558, 333, 1419, 24, 23, "Message"],
+Cell[14980, 359, 1419, 24, 23, "Message"],
+Cell[16402, 385, 1417, 24, 23, "Message"],
+Cell[17822, 411, 1507, 26, 23, "Message"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
